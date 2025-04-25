@@ -1,0 +1,114 @@
+*{
+  box-sizing: border-box;
+}
+.card {
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.row label {
+  font-weight: bold;
+  width: 150px;
+  margin-right: 1rem;
+}
+
+.row p {
+  margin: 0;
+  flex: 1;
+}
+
+.card-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+.button-row {
+  margin-top: 0.5rem;
+}
+
+button {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button + button {
+  background-color: #6c757d;
+}
+
+button + button:hover {
+  background-color: #5a6268;
+}
+header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #46afaa;
+}
+.addContainer{
+  background-color: #9be1af;
+}
+form {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+form h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-family:Arial Black;
+  color: #333;
+}
+.formInput{
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border 0.3s ease;
+}
+.submit{
+  display: block;
+  margin: 0 auto;
+}
+.checkBox{
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  vertical-align: middle; 
+}
+.checkBox-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+h1{
+  font-family:Arial Black;
+  color: #f9f9f9; 
+}
+.cardContainer{
+  background-color: #557882;
+  padding-left: 10px;
+  padding-right: 10px;
+}

@@ -1,0 +1,8 @@
+CREATE TABLE zooDbTable (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    gyvūnoPav CHAR(45) NOT NULL,
+    rūšis CHAR(45) NOT NULL,
+    svoris FLOAT NOT NULL,
+    aplinka CHAR(155) NOT NULL,
+    gyvenaLietuvoje BOOLEAN NOT NULL
+);
