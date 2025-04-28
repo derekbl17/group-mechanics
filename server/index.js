@@ -8,7 +8,7 @@ const cors = require('cors');
 const Test = require('./models/Test')
 
 const app = express();
-const PORT = process.env.PORT || 5000; // Backend runs on 5000, frontend runs on 5173 (default for Vite)
+const PORT = process.env.PORT || 5000; 
 
 app.use(cors());
 app.use(express.json());
