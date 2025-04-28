@@ -13,11 +13,7 @@ function App() {
 
   const fetchPosts = async () => {
     try {
-<<<<<<< HEAD
-      const result = await axios.get("http://localhost:5001/api/test");
-=======
       const result = await axios.get(`${apiUrl}/api/test`);
->>>>>>> master
       console.log(result.data);
       setPosts(result.data);
     } catch (err) {
@@ -34,11 +30,7 @@ function App() {
 
     try {
       // Send the POST request to the backend
-<<<<<<< HEAD
-      const result = await axios.post("http://localhost:5001/api/test", {
-=======
       const result = await axios.post(`${apiUrl}/api/test`, {
->>>>>>> master
         name,
         message,
       });
