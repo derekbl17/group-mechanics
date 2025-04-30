@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import RegistrationForm from "./components/RegistrationForm.jsx";
 const apiUrl = import.meta.env.VITE_API_URL;
 console.log(apiUrl);
 
@@ -45,6 +46,7 @@ function App() {
 
   return (
     <>
+      <RegistrationForm />
       <h1>Test POST Form</h1>
       <form onSubmit={handleSubmit}>
         <label>
