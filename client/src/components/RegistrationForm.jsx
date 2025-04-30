@@ -42,43 +42,46 @@ export default function RegistrationForm() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="regForm">
-        <div>
-          <label htmlFor="">Username</label>
-          <input
-            value={formData.username}
-            name="username"
-            type="text"
-            placeholder="user123.."
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="">Email</label>
-          <input
-            value={formData.email}
-            name="email"
-            type="email"
-            placeholder="mailer@mail.co"
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="">Password</label>
-          <input
-            value={formData.password}
-            name="password"
-            type="password"
-            placeholder="*****"
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button>Submit</button>
-        {error && <p className="errorMessage">{error}</p>}
-      </form>
+      <fieldset>
+        <legend>Registration form</legend>
+        <form onSubmit={handleSubmit} className="regForm">
+          <div>
+            <label htmlFor="">Username</label>
+            <input
+              value={formData.username}
+              name="username"
+              type="text"
+              placeholder="user123.."
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="">Email</label>
+            <input
+              value={formData.email}
+              name="email"
+              type="email"
+              placeholder="mailer@mail.co"
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="">Password</label>
+            <input
+              value={formData.password}
+              name="password"
+              type="password"
+              placeholder="*****"
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <button>Submit</button>
+          {error && <p className="errorMessage">{error}</p>}
+        </form>
+      </fieldset>
     </div>
   );
 }

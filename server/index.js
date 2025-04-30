@@ -6,7 +6,7 @@ const cors = require('cors');
 
 
 const Test = require('./models/Test')
-const register = require('./routes/register.js')
+const register = require('./routes/users.js')
 
 const app = express();
 const PORT = process.env.PORT || 5000; 
