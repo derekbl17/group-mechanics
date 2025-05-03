@@ -11,7 +11,7 @@ export default function RegistrationForm() {
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    console.log(`set ${e.target.name} as ${e.target.value}, form: ${formData}`);
+    console.log(`set ${e.target.name} as ${e.target.value}`);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -35,6 +35,7 @@ export default function RegistrationForm() {
 
       alert("User registered!");
       setFormData({ username: "", email: "", password: "" });
+      setError("");
     } catch (err) {
       setError(err.message);
     }
@@ -43,7 +44,7 @@ export default function RegistrationForm() {
   return (
     <div>
       <fieldset>
-        <legend>Registration form</legend>
+        <legend>User registration form</legend>
         <form onSubmit={handleSubmit} className="regForm">
           <div>
             <label htmlFor="">Username</label>
