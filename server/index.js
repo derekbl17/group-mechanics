@@ -1,21 +1,34 @@
 require('dotenv').config();
-console.log("dot env uri: ",process.env.MONGODB_URI)
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser')
 const cors = require('cors');
 
-
-const Test = require('./models/Test')
-const userRoutes = require('./routes/users.js')
+const authRoutes=require('./routes/authRoutes.js')
 const mechanicRoutes=require('./routes/mechanics.js')
+const adminRoutes = require('./routes/adminRoutes');
+
+
 
 const app = express();
-const PORT = process.env.PORT || 5000; 
+const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+
+
 app.use(express.json());
+app.use(cookieParser())
 
-app.use('/api',userRoutes)
+
+app.use('/api', adminRoutes);
+app.use('/api',authRoutes)
 app.use('/api',mechanicRoutes)
 
 // Connect to MongoDB
@@ -32,36 +45,6 @@ async function connectDB() {
   }
 }
 connectDB();
-
-// Example simple route /////////////////////////////////////////////
-app.get('/', (req, res) => {
-    res.send('Hello from backend!');
-});
-
-app.post('/api/test', async (req, res) => {
-    try {
-        const { name, message }=req.body;
-        console.log(`Received: ${name} - ${message}`)
-        const newTest=new Test({name,message})
-        await newTest.save()
-        res.status(200).json({ success: true, message: 'Data received successfully', data: { name, message } });
-    } catch (err) {
-        res.status(500).json({ success: false, message: 'Something went wrong', error: err });
-    }
-});
-// GET all items
-app.get('/api/test', async (req, res) => {
-    try {
-        const items = await Test.find();
-        res.json(items);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-////////////////////////////////////////////////////////////////
-
-
-
 
 // Start server
 app.listen(PORT, () => {
