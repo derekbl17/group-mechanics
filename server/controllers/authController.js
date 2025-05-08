@@ -42,3 +42,13 @@ exports.logout = (req, res) => {
   res.clearCookie('token', COOKIE_OPTIONS);
   res.json({ message: 'Logged out successfully' });
 };
+
+exports.admin=(req,res)=>{
+  res.set('Cache-Control', 'no-store');
+  res.json({ message: `Hello Admin ${req.user.username}!` });
+}
+
+exports.checkLogin=(req,res)=>{
+  res.set('Cache-Control', 'no-store');
+  res.json({ message: `Hello ${req.user.username}!`, username:req.user.username });
+}
