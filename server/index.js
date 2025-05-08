@@ -6,9 +6,6 @@ const cors = require('cors');
 
 const authRoutes=require('./routes/authRoutes.js')
 const mechanicRoutes=require('./routes/mechanics.js')
-const adminRoutes = require('./routes/adminRoutes');
-
-
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,7 +24,6 @@ app.use(express.json());
 app.use(cookieParser())
 
 
-app.use('/api', adminRoutes);
 app.use('/api',authRoutes)
 app.use('/api',mechanicRoutes)
 

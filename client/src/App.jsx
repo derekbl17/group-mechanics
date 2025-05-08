@@ -1,25 +1,52 @@
-import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./Pages/LoginPage.jsx";
 import RegistrationPage from "./Pages/RegistrationPage.jsx";
 import Navbar from "./components/Navbar.jsx";
-import RequireAuth from "./services/Auth.jsx";
+import RequireAdminAuth from "./services/AdminAuth.jsx";
+import RequireBasicAuth from "./services/BasicAuth.jsx";
+import ErrorPage from "./Pages/ErrorPage.jsx";
+import PublicOnlyRoute from "./routes/PublicOnlyRoute.jsx";
+import { useAuth } from "./services/AuthContext.jsx";
+import ForbiddenPage from "./Pages/ForbiddenPage.jsx";
 
 function App() {
+  const { loading } = useAuth();
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
       <BrowserRouter>
         <Navbar />
         <Routes>
           {/* Public Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/" element={<h1>Home page</h1>} />
+          <Route
+            path="/login"
+            element={
+              <PublicOnlyRoute>
+                <LoginPage />
+              </PublicOnlyRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicOnlyRoute>
+                <RegistrationPage />
+              </PublicOnlyRoute>
+            }
+          />
+          <Route path="/forbidden" element={<ForbiddenPage />} />
           {/* Protected Routes */}
-          <Route element={<RequireAuth />}>
-            <Route path="/" />
+          <Route element={<RequireAdminAuth />}>
+            <Route path="/admin" />
           </Route>
-          {/* Redirects invalid paths to / (home) */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route element={<RequireBasicAuth />}>
+            <Route path="/basic" />
+          </Route>
+          {/* Redirects invalid paths to (Error page) */}
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>
     </>

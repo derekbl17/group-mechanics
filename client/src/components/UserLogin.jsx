@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_API_URL;
+import { useAuth } from "../services/AuthContext";
 
 export default function UserLoginForm() {
   const [formData, setFormData] = useState({
@@ -8,6 +10,10 @@ export default function UserLoginForm() {
     password: "",
   });
   const [error, setError] = useState("");
+
+  const { login } = useAuth();
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     console.log(`set ${e.target.name} as ${e.target.value}`);
@@ -37,6 +43,8 @@ export default function UserLoginForm() {
       console.log(data);
       setFormData({ email: "", password: "" });
       setError("");
+      login(data.username);
+      navigate("/");
     } catch (err) {
       setError(err.message);
     }
