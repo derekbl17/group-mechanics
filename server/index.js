@@ -6,6 +6,7 @@ const cors = require('cors');
 
 const authRoutes=require('./routes/authRoutes.js')
 const mechanicRoutes=require('./routes/mechanics.js')
+const workshopRoutes=require('./routes/workshopRoutes.js')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,6 +27,7 @@ app.use(cookieParser())
 
 app.use('/api',authRoutes)
 app.use('/api',mechanicRoutes)
+app.use('/api',workshopRoutes)
 
 // Connect to MongoDB
 async function connectDB() {

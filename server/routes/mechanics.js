@@ -1,7 +1,9 @@
 const express = require('express');
-const {registerMechanic}=require("../controllers/mechanicController")
 const router = express.Router();
+const {registerMechanic,getAllMechanics}=require("../controllers/mechanicController")
+
 
 router.post('/mechReg',registerMechanic)
+router.get('/mechGetAll',getAllMechanics)
 
 module.exports=router;

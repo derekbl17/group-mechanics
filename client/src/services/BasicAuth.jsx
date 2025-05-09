@@ -12,7 +12,7 @@ export default function RequireBasicAuth() {
     const checkAuth = async () => {
       try {
         const res = await fetch(`${apiUrl}/api/login-check`, {
-          credentials: "include", // still using cookies
+          credentials: "include",
         });
 
         const data = await res.json();
@@ -20,12 +20,11 @@ export default function RequireBasicAuth() {
         if (!res.ok) throw new Error(data.message);
 
         console.log("✅ Authenticated:", data.message);
-        setChecking(false); // allow rendering
+        setChecking(false);
       } catch (err) {
         console.log("❌ Not authenticated:", err.message);
 
         if (location.pathname === "/register") {
-          // Allow access to register
           setChecking(false);
         } else {
           navigate("/login", { replace: true });
@@ -40,5 +39,5 @@ export default function RequireBasicAuth() {
     return <div>Checking authentication...</div>;
   }
 
-  return <Outlet />; // render nested routes
+  return <Outlet />;
 }

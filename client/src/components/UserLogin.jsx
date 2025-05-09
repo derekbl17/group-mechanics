@@ -1,8 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-const apiUrl = import.meta.env.VITE_API_URL;
 import { useAuth } from "../services/AuthContext";
+import { loginUser } from "../services/AuthService";
 
 export default function UserLoginForm() {
   const [formData, setFormData] = useState({
@@ -29,15 +29,7 @@ export default function UserLoginForm() {
     }
 
     try {
-      const res = await fetch(`${apiUrl}/api/login`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Something went wrong");
+      const data = await loginUser(formData);
 
       alert(`Welcome ${data.username} (${data.role})`);
       console.log(data);
