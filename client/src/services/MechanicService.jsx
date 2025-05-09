@@ -13,3 +13,41 @@ export async function getAllMechanics() {
     throw error;
   }
 }
+
+export async function updateMechanic(id, params) {
+  try {
+    const response = await fetch(`${apiUrl}/api/mechUpdate/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update mechanic");
+    }
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("Error updating mechanic:", err);
+    throw err;
+  }
+}
+
+export async function deleteMechanic(id) {
+  try {
+    const response = await fetch(`${apiUrl}/api/mechDelete/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete mechanic");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("Error deleting mechanic:", err);
+    throw err;
+  }
+}
