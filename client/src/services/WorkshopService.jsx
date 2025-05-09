@@ -34,3 +34,39 @@ export async function registerWorkshop(workshopData) {
     throw error;
   }
 }
+
+export async function deleteWorkshop(id) {
+  try {
+    const response = await fetch(`${apiUrl}/api/workshopDelete/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      throw new Error("Failed to delete workshop");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error deleting workshop:", error);
+    throw error;
+  }
+}
+
+export async function updateWorkshop(id, updateData) {
+  try {
+    const response = await fetch(`${apiUrl}/api/workshopUpdate/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updateData),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update workshop");
+    }
+    const data = await response.json();
+    return data.workshop; // assuming backend returns { workshop: updatedWorkshop }
+  } catch (error) {
+    console.error("Error updating workshop:", error);
+    throw error;
+  }
+}
