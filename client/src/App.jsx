@@ -8,6 +8,7 @@ import ErrorPage from "./Pages/ErrorPage.jsx";
 import PublicOnlyRoute from "./routes/PublicOnlyRoute.jsx";
 import { useAuth } from "./services/AuthContext.jsx";
 import ForbiddenPage from "./Pages/ForbiddenPage.jsx";
+import HomePage from "./Pages/HomePage.jsx";
 
 function App() {
   const { loading } = useAuth();
@@ -20,7 +21,7 @@ function App() {
         <Navbar />
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<h1>Home page</h1>} />
+          <Route path="/" element={<HomePage />} />
           <Route
             path="/login"
             element={
