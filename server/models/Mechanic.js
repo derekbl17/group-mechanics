@@ -6,7 +6,8 @@ const mechanicSchema = new mongoose.Schema({
   specialty: { type: String, required: true },
   photo: {type: String, required: true},
   workshop:{type: String, required: true},
-  city:{type: String, required: true}
+  city:{type: String, required: true},
+  likes:[{type:mongoose.Schema.Types.ObjectId, ref: "User"}]
 });
 
 module.exports = mongoose.model('Mechanic', mechanicSchema);

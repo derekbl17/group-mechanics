@@ -4,10 +4,12 @@ const JWT_SECRET = process.env.SECRET;
 
 const authMiddleware = (req, res, next) => {
   const token = req.cookies.token;
+  console.log(token)
   if (!token) return res.status(401).json({ message: 'Unauthorized: No token' });
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log('Decoded user:', decoded);
     req.user = decoded;
     next();
   } catch (err) {

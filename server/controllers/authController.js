@@ -28,7 +28,7 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: 'Invalid email or password' });
 
-    const token = jwt.sign({ id: user._id, username: user.username, role:user.role }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ _id: user._id, username: user.username, role:user.role }, JWT_SECRET, { expiresIn: '1h' });
 
     res.cookie('token', token, { ...COOKIE_OPTIONS, maxAge: 60 * 60 * 1000 });
     res.json({ message: 'Logged in successfully', username: user.username, role:user.role });
@@ -50,5 +50,5 @@ exports.admin=(req,res)=>{
 
 exports.checkLogin=(req,res)=>{
   res.set('Cache-Control', 'no-store');
-  res.json({ message: `Hello ${req.user.username}!`, username:req.user.username });
+  res.json({ message: `Hello ${req.user.username}!`, username:req.user.username, user:req.user });
 }

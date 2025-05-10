@@ -6,6 +6,7 @@ export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -18,6 +19,8 @@ export function AuthProvider({ children }) {
         const data = await res.json();
         setIsLoggedIn(true);
         setUsername(data.username);
+        console.log(data.user);
+        setUser(data.user);
       } else {
         setIsLoggedIn(false);
         setUsername(null);
@@ -45,7 +48,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, username, login, logout, loading }}
+      value={{ isLoggedIn, username, login, logout, loading, user }}
     >
       {children}
     </AuthContext.Provider>
