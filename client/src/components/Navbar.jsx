@@ -38,6 +38,11 @@ export default function Navbar() {
             <Link to="/">Home</Link>
           </li>
         )}
+        {isLoggedIn && location.pathname !== "/likes" && (
+          <li>
+            <Link to="/likes">Likes</Link>
+          </li>
+        )}
         {isLoggedIn ? (
           <li>
             <button onClick={handleLogout}>Logout</button>

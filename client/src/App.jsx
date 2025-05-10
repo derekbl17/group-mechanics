@@ -9,6 +9,7 @@ import PublicOnlyRoute from "./routes/PublicOnlyRoute.jsx";
 import { useAuth } from "./services/AuthContext.jsx";
 import ForbiddenPage from "./Pages/ForbiddenPage.jsx";
 import HomePage from "./Pages/HomePage.jsx";
+import LikedMechanicsPage from "./Pages/LikedMechanicsPage.jsx";
 
 function App() {
   const { loading } = useAuth();
@@ -44,6 +45,7 @@ function App() {
             <Route path="/admin" />
           </Route>
           <Route element={<RequireBasicAuth />}>
+            <Route path="/likes" element={<LikedMechanicsPage />} />
             <Route path="/basic" />
           </Route>
           {/* Redirects invalid paths to (Error page) */}
