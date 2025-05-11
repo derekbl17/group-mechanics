@@ -10,6 +10,7 @@ import { useAuth } from "./services/AuthContext.jsx";
 import ForbiddenPage from "./Pages/ForbiddenPage.jsx";
 import HomePage from "./Pages/HomePage.jsx";
 import LikedMechanicsPage from "./Pages/LikedMechanicsPage.jsx";
+import Footer from "./components/Footer.js";
 
 function App() {
   const { loading } = useAuth();
@@ -51,6 +52,7 @@ function App() {
           {/* Redirects invalid paths to (Error page) */}
           <Route path="*" element={<ErrorPage />} />
         </Routes>
+        <Footer/>
       </BrowserRouter>
     </>
   );
