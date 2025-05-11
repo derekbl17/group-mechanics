@@ -1,90 +1,57 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-const apiUrl = import.meta.env.VITE_API_URL;
-console.log(apiUrl);
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./Pages/LoginPage.jsx";
+import RegistrationPage from "./Pages/RegistrationPage.jsx";
+import Navbar from "./components/Navbar.jsx";
+import RequireAdminAuth from "./services/AdminAuth.jsx";
+import RequireBasicAuth from "./services/BasicAuth.jsx";
+import ErrorPage from "./Pages/ErrorPage.jsx";
+import PublicOnlyRoute from "./routes/PublicOnlyRoute.jsx";
+import { useAuth } from "./services/AuthContext.jsx";
+import ForbiddenPage from "./Pages/ForbiddenPage.jsx";
+import HomePage from "./Pages/HomePage.jsx";
+import LikedMechanicsPage from "./Pages/LikedMechanicsPage.jsx";
 
 function App() {
-  const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
-  const [response, setResponse] = useState(null);
-  const [error, setError] = useState(null);
-
-  const [posts, setPosts] = useState([]);
-
-  const fetchPosts = async () => {
-    try {
-      const result = await axios.get(`${apiUrl}/api/test`);
-      console.log(result.data);
-      setPosts(result.data);
-    } catch (err) {
-      console.error("Failed to fetch posts", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      // Send the POST request to the backend
-      const result = await axios.post(`${apiUrl}/api/test`, {
-        name,
-        message,
-      });
-      setResponse(result.data);
-      setError(null);
-      fetchPosts();
-    } catch (err) {
-      setError("Failed to send data");
-      setResponse(null);
-    }
-  };
-
+  const { loading } = useAuth();
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
-      <h1>Test POST Form</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Name:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/login"
+            element={
+              <PublicOnlyRoute>
+                <LoginPage />
+              </PublicOnlyRoute>
+            }
           />
-        </label>
-        <br />
-        <label>
-          Message:
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            required
+          <Route
+            path="/register"
+            element={
+              <PublicOnlyRoute>
+                <RegistrationPage />
+              </PublicOnlyRoute>
+            }
           />
-        </label>
-        <br />
-        <button type="submit">Submit</button>
-      </form>
-
-      {response && (
-        <div>
-          <h3>Response from Backend:</h3>
-          <pre>{JSON.stringify(response, null, 2)}</pre>
-        </div>
-      )}
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <h1>Posts</h1>
-      <ul>
-        {posts?.map((post) => (
-          <li key={post._id}>
-            <strong>{post.name}</strong>: {post.message}
-          </li>
-        ))}
-      </ul>
+          <Route path="/forbidden" element={<ForbiddenPage />} />
+          {/* Protected Routes */}
+          <Route element={<RequireAdminAuth />}>
+            <Route path="/admin" />
+          </Route>
+          <Route element={<RequireBasicAuth />}>
+            <Route path="/likes" element={<LikedMechanicsPage />} />
+            <Route path="/basic" />
+          </Route>
+          {/* Redirects invalid paths to (Error page) */}
+          <Route path="*" element={<ErrorPage />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }

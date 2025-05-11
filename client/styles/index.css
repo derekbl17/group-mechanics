@@ -53,3 +53,31 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+.regForm{
+  display: flex;
+  flex-wrap: wrap;
+  width: 300px;
+}
+.errorMessage{
+  color: red;
+  font-weight: bolder;
+}
+.mechanic-card{
+  border: 1px solid black;
+  width: 24vw;
+}
+.mechanic-card img{
+  width:100%;
+}
+.mechanic-container{
+  display: flex;
+  flex-wrap: wrap;
+}
+.workshop-container{
+  display: flex;
+  flex-wrap: wrap;
+}
+.workshop-card{
+  border: 1px solid black;
+  width: 24vw;
+}
