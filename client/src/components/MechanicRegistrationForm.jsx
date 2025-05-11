@@ -1,5 +1,6 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAllWorkshops } from "../services/WorkshopService";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function MechanicRegistrationForm() {
@@ -12,15 +13,37 @@ export default function MechanicRegistrationForm() {
     city: "",
   });
   const [error, setError] = useState("");
+  const [workshops, setWorkshops] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+      fetchWorkshops();
+    }, []);
+  
+    const fetchWorkshops = async () => {
+      try {
+        const data = await getAllWorkshops();
+        console.log("All workshops", data);
+        setWorkshops(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
 
   const handleChange = (e) => {
     console.log(`set ${e.target.name} as ${e.target.value}`);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const uniqueCities = [...new Set(workshops.map(item => item.city))];
+  
+  const filteredWorkshops = workshops.filter(
+  (item) => item.city === formData.city
+);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Basic client-side validation
     if (
       !formData.firstName ||
       !formData.lastName ||
@@ -108,27 +131,38 @@ export default function MechanicRegistrationForm() {
             />
           </div>
           <div>
-            <label htmlFor="">workshop</label>
-            <input
-              value={formData.workshop}
-              name="workshop"
-              type="text"
-              placeholder="workshop name.."
-              onChange={handleChange}
-              required
-            />
+            <label htmlFor="workshop">Workshop</label>
+              <select
+                name="workshop"
+                value={formData.workshop}
+                onChange={handleChange}
+                disabled={!formData.city}
+                required
+              >
+                  <option value="">Select a workshop...</option>
+                    {filteredWorkshops.map((item) => (
+                    <option key={item.name} value={item.name}>
+                    {item.name}
+              </option>
+                ))}
+                </select>
           </div>
-          <div>
-            <label htmlFor="">city</label>
-            <input
-              value={formData.city}
-              name="city"
-              type="text"
-              placeholder="city.."
-              onChange={handleChange}
-              required
-            />
-          </div>
+           <div>
+            <label htmlFor="city">City</label>
+              <select
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                required
+              >
+              <option value="">Select a city...</option>
+                {uniqueCities.map((city) => (
+                <option key={city} value={city}>
+                {city}
+              </option>
+                ))}
+              </select>
+            </div>
           <button>Submit</button>
           {error && <p className="errorMessage">{error}</p>}
         </form>

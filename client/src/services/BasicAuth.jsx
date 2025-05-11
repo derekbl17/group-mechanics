@@ -1,43 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../services/AuthContext"; // Assuming you're using this context
 
-const apiUrl = import.meta.env.VITE_API_URL;
-
-export default function RequireBasicAuth() {
+export default function RequireAdminAuth() {
   const [checking, setChecking] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, isLoggedIn } = useAuth(); // Get user info from context
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const res = await fetch(`${apiUrl}/api/login-check`, {
-          credentials: "include",
-        });
+      if (!isLoggedIn) {
+        navigate("/login", { replace: true });
+        return;
+      }
 
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data.message);
-
-        console.log("✅ Authenticated:", data.message);
+      if (user && user.role === "basic") {
         setChecking(false);
-      } catch (err) {
-        console.log("❌ Not authenticated:", err.message);
-
-        if (location.pathname === "/register") {
-          setChecking(false);
-        } else {
-          navigate("/login", { replace: true });
-        }
+      } else {
+        console.log("Redirecting to forbidden page");
+        navigate("/forbidden", { replace: true });
       }
     };
 
     checkAuth();
-  }, [navigate, location.pathname]);
+  }, [isLoggedIn, user, navigate]);
 
   if (checking) {
     return <div>Checking authentication...</div>;
   }
 
-  return <Outlet />;
+  return <Outlet />;  
 }

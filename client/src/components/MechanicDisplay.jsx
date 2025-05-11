@@ -6,7 +6,7 @@ import {
 } from "../services/MechanicService";
 import MechanicCard from "./MechanicCard";
 
-function MechanicDisplay() {
+function MechanicDisplay({role}) {
   const { user, isLoggedIn } = useAuth();
   const [mechanics, setMechanics] = useState([]);
   const [likedMechanicIds, setLikedMechanicIds] = useState(new Set());
@@ -46,9 +46,7 @@ function MechanicDisplay() {
       const likedMechanicsData = await getLikedMechanics();
       console.log("Liked mechanics data:", likedMechanicsData);
 
-      // If we have liked mechanics data and it's an array
       if (Array.isArray(likedMechanicsData) && likedMechanicsData.length > 0) {
-        // Extract the IDs and store them in a Set
         const likedIds = new Set(
           likedMechanicsData.map((mechanic) => mechanic._id)
         );
@@ -83,15 +81,11 @@ function MechanicDisplay() {
       return;
     }
 
-    // Update mechanics state with the new data
     setMechanics((prevMechanics) =>
       prevMechanics.map((m) => (m._id === mechanicId ? updatedMechanic : m))
     );
 
-    // Update liked state based on the likes array
-
     if (user?.id && Array.isArray(updatedMechanic.likes)) {
-      console.log("USER:", user);
       const isLikedByUser = updatedMechanic.likes.includes(user.id);
       console.log(`Mechanic ${mechanicId} is liked by user:`, isLikedByUser);
 
@@ -123,7 +117,7 @@ function MechanicDisplay() {
             onLikeToggle={handleLikeToggle}
             isLiked={likedMechanicIds.has(mechanic._id)}
             isLoggedIn={isLoggedIn}
-            userId={user?.id}
+            role={role}
           />
         ))}
       </div>
