@@ -1,17 +1,20 @@
 import React from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from "react";
 import { getAllWorkshops } from "../services/WorkshopService";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function MechanicRegistrationForm() {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    specialty: "",
-    photo: "",
-    workshop: "",
-    city: "",
+    firstName: '',
+    lastName: '',
+    specialty: '',
+    photo: '',
+    workshop: '',
+    city: '',
   });
+
   const [error, setError] = useState("");
   const [workshops, setWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,8 +35,8 @@ export default function MechanicRegistrationForm() {
       }
     };
 
+
   const handleChange = (e) => {
-    console.log(`set ${e.target.name} as ${e.target.value}`);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const uniqueCities = [...new Set(workshops.map(item => item.city))];
@@ -44,129 +47,127 @@ export default function MechanicRegistrationForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.specialty ||
-      !formData.photo ||
-      !formData.workshop ||
-      !formData.city
-    ) {
-      setError("All fields are required");
+    // Basic client-side validation
+    const { firstName, lastName, specialty, photo, workshop, city } = formData;
+    if (!firstName || !lastName || !specialty || !photo || !workshop || !city) {
+      setError('All fields are required');
+
       return;
     }
 
     try {
       const res = await fetch(`${apiUrl}/api/mechReg`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Something went wrong");
+      if (!res.ok) throw new Error(data.message || 'Something went wrong');
 
-      alert("User registered!");
-      setFormData({
-        firstName: "",
-        lastName: "",
-        specialty: "",
-        photo: "",
-        workshop: "",
-        city: "",
-      });
-      setError("");
+      alert('Mechanic registered!');
+      setFormData({ firstName: '', lastName: '', specialty: '', photo: '', workshop: '', city: '' });
+      setError('');
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-    <div>
-      <fieldset>
-        <legend>Mechanic Registration form</legend>
-        <form onSubmit={handleSubmit} className="regForm">
-          <div>
-            <label htmlFor="">firstName</label>
-            <input
-              value={formData.firstName}
-              name="firstName"
-              type="text"
-              placeholder="Johnny.."
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="">lastName</label>
-            <input
-              value={formData.lastName}
-              name="lastName"
-              type="text"
-              placeholder="Johnson.."
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="">specialty</label>
-            <input
-              value={formData.specialty}
-              name="specialty"
-              type="text"
-              placeholder="Engines.."
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="">photo</label>
-            <input
-              value={formData.photo}
-              name="photo"
-              type="text"
-              placeholder="url.."
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="workshop">Workshop</label>
-              <select
-                name="workshop"
-                value={formData.workshop}
-                onChange={handleChange}
-                disabled={!formData.city}
-                required
-              >
-                  <option value="">Select a workshop...</option>
-                    {filteredWorkshops.map((item) => (
-                    <option key={item.name} value={item.name}>
-                    {item.name}
-              </option>
-                ))}
-                </select>
-          </div>
-           <div>
-            <label htmlFor="city">City</label>
-              <select
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                required
-              >
-              <option value="">Select a city...</option>
-                {uniqueCities.map((city) => (
-                <option key={city} value={city}>
-                {city}
-              </option>
-                ))}
-              </select>
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-lg-6">
+          <div className="card shadow-sm">
+            <div className="card-body">
+              <h3 className="card-title text-center mb-4">Mechanic Registration</h3>
+              {error && <div className="alert alert-danger">{error}</div>}
+              <form onSubmit={handleSubmit}>
+                <div className="row">
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="firstName" className="form-label">First Name</label>
+                    <input
+                      id="firstName"
+                      name="firstName"
+                      type="text"
+                      className="form-control"
+                      placeholder="Johnny.."
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="lastName" className="form-label">Last Name</label>
+                    <input
+                      id="lastName"
+                      name="lastName"
+                      type="text"
+                      className="form-control"
+                      placeholder="Johnson.."
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="specialty" className="form-label">Specialty</label>
+                  <input
+                    id="specialty"
+                    name="specialty"
+                    type="text"
+                    className="form-control"
+                    placeholder="Engines.."
+                    value={formData.specialty}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="photo" className="form-label">Photo URL</label>
+                  <input
+                    id="photo"
+                    name="photo"
+                    type="url"
+                    className="form-control"
+                    placeholder="https://..."
+                    value={formData.photo}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="workshop" className="form-label">Workshop Name</label>
+                  <input
+                    id="workshop"
+                    name="workshop"
+                    type="text"
+                    className="form-control"
+                    placeholder="Workshop name.."
+                    value={formData.workshop}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="city" className="form-label">City</label>
+                  <input
+                    id="city"
+                    name="city"
+                    type="text"
+                    className="form-control"
+                    placeholder="City.."
+                    value={formData.city}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <button type="submit" className="btn btn-success w-100">Register Mechanic</button>
+              </form>
             </div>
-          <button>Submit</button>
-          {error && <p className="errorMessage">{error}</p>}
-        </form>
-      </fieldset>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

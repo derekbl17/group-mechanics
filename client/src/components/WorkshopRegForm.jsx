@@ -1,13 +1,10 @@
-import React from "react";
-import { useState } from "react";
-import { registerWorkshop } from "../services/WorkshopService";
+import React, { useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { registerWorkshop } from '../services/WorkshopService';
 
 export default function WorkshopRegForm() {
-  const [workshopData, setWorkshopData] = useState({
-    name: "",
-    city: "",
-  });
-  const [error, setError] = useState("");
+  const [workshopData, setWorkshopData] = useState({ name: '', city: '' });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setWorkshopData({ ...workshopData, [e.target.name]: e.target.value });
@@ -15,53 +12,63 @@ export default function WorkshopRegForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!workshopData.name || !workshopData.city) {
-      setError("All fields are required");
+    const { name, city } = workshopData;
+    if (!name || !city) {
+      setError('All fields are required');
       return;
     }
 
     try {
-      const data = await registerWorkshop(workshopData);
-
-      setWorkshopData({ name: "", city: "" });
-      setError("");
-      alert("Workshop Registered!");
+      await registerWorkshop(workshopData);
+      setWorkshopData({ name: '', city: '' });
+      setError('');
+      alert('Workshop Registered!');
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-    <div>
-      <fieldset>
-        <legend>Workshop Registration form</legend>
-        <form onSubmit={handleSubmit} className="regForm">
-          <div>
-            <label htmlFor="name">name</label>
-            <input
-              value={workshopData.name}
-              name="name"
-              type="text"
-              placeholder="name"
-              onChange={handleChange}
-              required
-            />
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card shadow-sm">
+            <div className="card-body">
+              <h3 className="card-title text-center mb-4">Register Workshop</h3>
+              {error && <div className="alert alert-danger">{error}</div>}
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="name" className="form-label">Workshop Name</label>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter workshop name"
+                    value={workshopData.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="city" className="form-label">City</label>
+                  <input
+                    id="city"
+                    name="city"
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter city"
+                    value={workshopData.city}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary w-100">Submit</button>
+              </form>
+            </div>
           </div>
-          <div>
-            <label htmlFor="city">city</label>
-            <input
-              value={workshopData.city}
-              name="city"
-              type="text"
-              placeholder="city"
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <button>Submit</button>
-          {error && <p className="errorMessage">{error}</p>}
-        </form>
-      </fieldset>
+        </div>
+      </div>
     </div>
   );
 }

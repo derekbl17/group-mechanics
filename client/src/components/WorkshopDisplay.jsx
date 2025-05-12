@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from "../services/AuthContext";
 import { getAllWorkshops } from "../services/WorkshopService";
 import WorkshopCard from "./WorkshopCard";
@@ -17,9 +18,9 @@ export default function WorkshopDisplay() {
     try {
       const data = await getAllWorkshops();
       setWorkshops(data);
-      setLoading(false);
     } catch (err) {
       setError(err.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -34,22 +35,38 @@ export default function WorkshopDisplay() {
     );
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center my-5">
+        <div className="spinner-border text-secondary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="alert alert-danger text-center my-5">
+        Error: {error}
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h2>Workshops</h2>
-      <div className="workshop-container">
+    <div className="container mt-4">
+      <h2 className="mb-4 text-center">Workshops</h2>
+      <div className="row g-4">
         {workshops.map((workshop) => (
+          <div className="col-sm-6 col-md-4 col-lg-3">
           <WorkshopCard
             key={workshop._id}
             workshop={workshop}
             onDelete={handleDelete}
             onUpdate={handleUpdate}
             role={user?.role}
-
           />
+          </div>
         ))}
       </div>
     </div>

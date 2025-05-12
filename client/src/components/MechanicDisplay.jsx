@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { useAuth } from "../services/AuthContext";
-import {
-  getAllMechanics,
-  getLikedMechanics,
-} from "../services/MechanicService";
-import MechanicCard from "./MechanicCard";
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../services/AuthContext';
+import { getAllMechanics, getLikedMechanics } from '../services/MechanicService';
+import MechanicCard from './MechanicCard';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function MechanicDisplay({role}) {
+
   const { user, isLoggedIn } = useAuth();
   const [mechanics, setMechanics] = useState([]);
   const [likedMechanicIds, setLikedMechanicIds] = useState(new Set());
@@ -15,7 +15,6 @@ function MechanicDisplay({role}) {
 
   useEffect(() => {
     fetchMechanics();
-
     if (isLoggedIn && user?.id) {
       fetchLikedMechanics();
     } else {
@@ -26,21 +25,15 @@ function MechanicDisplay({role}) {
   const fetchMechanics = async () => {
     try {
       const data = await getAllMechanics();
-      console.log("All mechanics:", data);
       setMechanics(data);
-      setLoading(false);
     } catch (err) {
-      console.error("Error fetching mechanics:", err);
       setError(err.message);
+    } finally {
       setLoading(false);
     }
   };
 
   const fetchLikedMechanics = async () => {
-    if (!isLoggedIn) {
-      return;
-    }
-
     try {
       console.log("Fetching liked mechanics for user:");
       const likedMechanicsData = await getLikedMechanics();
@@ -53,28 +46,14 @@ function MechanicDisplay({role}) {
         console.log("Liked mechanic IDs:", Array.from(likedIds));
         setLikedMechanicIds(likedIds);
       } else {
-        console.log("No liked mechanics or invalid data");
         setLikedMechanicIds(new Set());
       }
-    } catch (error) {
-      console.error("Error loading liked mechanics", error);
+    } catch {
       setLikedMechanicIds(new Set());
     }
   };
 
-  const handleDelete = (id) => {
-    setMechanics((prev) => prev.filter((m) => m._id !== id));
-  };
-
-  const handleUpdate = (updatedMechanic) => {
-    setMechanics((prev) =>
-      prev.map((m) => (m._id === updatedMechanic._id ? updatedMechanic : m))
-    );
-  };
-
-  const handleLikeToggle = async (mechanicId, updatedMechanic) => {
-    console.log("Like toggle for mechanic:", mechanicId);
-    console.log("Updated mechanic data:", updatedMechanic);
+  const handleDelete = (id) => setMechanics((prev) => prev.filter((m) => m._id !== id));
 
     if (!mechanicId || !updatedMechanic) {
       console.error("Missing data in handleLikeToggle");
@@ -89,25 +68,37 @@ function MechanicDisplay({role}) {
       const isLikedByUser = updatedMechanic.likes.includes(user.id);
       console.log(`Mechanic ${mechanicId} is liked by user:`, isLikedByUser);
 
+  const handleLikeToggle = (id, updated) => {
+    setMechanics((prev) => prev.map((m) => (m._id === id ? updated : m)));
+    if (user?.id && Array.isArray(updated.likes)) {
+      const liked = updated.likes.includes(user.id);
       setLikedMechanicIds((prev) => {
-        const newSet = new Set(prev);
-        if (isLikedByUser) {
-          newSet.add(mechanicId);
-        } else {
-          newSet.delete(mechanicId);
-        }
-        return newSet;
+        const s = new Set(prev);
+        liked ? s.add(id) : s.delete(id);
+        return s;
       });
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading)
+    return (
+      <div className="d-flex justify-content-center my-5">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="alert alert-danger text-center my-5">
+        Error: {error}
+      </div>
+    );
 
   return (
-    <div>
-      <h1>All Mechanics</h1>
-      <div className="mechanic-container">
+    <div className="container mt-4">
+      <h1 className="mb-4 text-center">All Mechanics</h1>
+      <div className="row g-4">
         {mechanics.map((mechanic) => (
           <MechanicCard
             key={mechanic._id}
@@ -124,5 +115,3 @@ function MechanicDisplay({role}) {
     </div>
   );
 }
-
-export default MechanicDisplay;
