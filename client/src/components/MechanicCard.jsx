@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import validator from "validator";
+import React, { useState } from 'react';
+import validator from 'validator';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   deleteMechanic,
   updateMechanic,
   toggleLikeMechanic,
-} from "../services/MechanicService";
+} from '../services/MechanicService';
 
-function MechanicCard({
+export default function MechanicCard({
   mechanic,
   onDelete,
   onUpdate,
@@ -16,7 +17,7 @@ function MechanicCard({
   role, // Accept role as a prop
 }) {
   if (!mechanic || !mechanic._id) {
-    console.warn("Invalid mechanic data passed to MechanicCard:", mechanic);
+    console.warn('Invalid mechanic data passed to MechanicCard:', mechanic);
     return null;
   }
 
@@ -29,26 +30,17 @@ function MechanicCard({
     workshop: mechanic.workshop,
     city: mechanic.city,
   });
-
   const [likeInProgress, setLikeInProgress] = useState(false);
 
   const handleLike = async () => {
-    if (!isLoggedIn || likeInProgress) {
-      console.log("Like action prevented - not logged in or in progress");
-      return;
-    }
-
+    if (!isLoggedIn || likeInProgress) return;
+    setLikeInProgress(true);
     try {
-      setLikeInProgress(true);
-      console.log("Toggling like for mechanic:", mechanic._id);
-
-      const updatedMechanic = await toggleLikeMechanic(mechanic._id);
-      console.log("Toggled like response:", updatedMechanic);
-
+      const updated = await toggleLikeMechanic(mechanic._id);
       onLikeToggle(mechanic._id, updatedMechanic);
     } catch (err) {
-      console.error("Error toggling like:", err);
-      alert(err.message || "Error toggling like. Please try again.");
+      console.error('Error toggling like:', err);
+      alert(err.message || 'Error toggling like.');
     } finally {
       setLikeInProgress(false);
     }
@@ -60,117 +52,152 @@ function MechanicCard({
 
   const handleUpdate = async () => {
     const patchData = {};
-
     Object.keys(formData).forEach((key) => {
-      if (formData[key] !== mechanic[key]) {
-        patchData[key] = formData[key];
-      }
+      if (formData[key] !== mechanic[key]) patchData[key] = formData[key];
     });
-
     if (Object.keys(patchData).length === 0) {
-      alert("No changes to update.");
+      alert('No changes to update.');
       return;
     }
-
     try {
-      const updated = await updateMechanic(mechanic._id, patchData);
-      alert("Mechanic updated successfully!");
-      onUpdate(updated.mechanic);
+      const { mechanic: updatedMech } = await updateMechanic(
+        mechanic._id,
+        patchData
+      );
+      onUpdate(updatedMech);
       setIsEditing(false);
-    } catch (err) {
-      alert("Error updating mechanic.");
+    } catch {
+      alert('Error updating mechanic.');
     }
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this mechanic?")) {
+    if (window.confirm('Are you sure you want to delete this mechanic?')) {
       try {
         await deleteMechanic(mechanic._id);
         onDelete(mechanic._id);
-      } catch (err) {
-        alert("Delete failed.");
+      } catch {
+        alert('Delete failed.');
       }
     }
   };
 
-  // Make sure likes array exists and is an array
-  const likesCount = Array.isArray(mechanic.likes) ? mechanic.likes.length : 0;
 
-  const getLikeButtonText = () => {
-    console.log(isLiked);
-    if (!isLoggedIn) {
-      return `❤️ Likes (${likesCount})`;
-    }
-    return isLiked ? `💔 Unlike (${likesCount})` : `❤️ Like (${likesCount})`;
-  };
+  const likesCount = Array.isArray(mechanic.likes) ? mechanic.likes.length : 0;
+    ? mechanic.likes.length
+    : 0;
+  const likeText = !isLoggedIn
+    ? `❤️ Likes (${likesCount})`
+    : isLiked
+    ? `💔 Unlike (${likesCount})`
+    : `❤️ Like (${likesCount})`;
+
 
   return (
-    <div className="mechanic-card">
+    <div className="card h-100 shadow-sm">
       <img
         src={
           validator.isURL(mechanic.photo)
             ? mechanic.photo
-            : "../styles/images/mechanic.jpg"
+
+            : '/styles/images/mechanic.jpg'
         }
+        className="card-img-top"
+
         alt={`${mechanic.firstName} ${mechanic.lastName}`}
       />
-      {isEditing ? (
-        <div>
-          <input
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-          />
-          <input
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-          />
-          <input
-            name="specialty"
-            value={formData.specialty}
-            onChange={handleChange}
-          />
-          <input name="photo" value={formData.photo} onChange={handleChange} />
-          <input
-            name="workshop"
-            value={formData.workshop}
-            onChange={handleChange}
-          />
-          <input name="city" value={formData.city} onChange={handleChange} />
-          <button onClick={handleUpdate}>Save</button>
-          <button onClick={() => setIsEditing(false)}>Cancel</button>
-        </div>
-      ) : (
-        <div>
-          <h2>
-            {mechanic.firstName} {mechanic.lastName}
-          </h2>
-          <p>Specialty: {mechanic.specialty}</p>
-          <p>Workshop: {mechanic.workshop}</p>
-          <p>City: {mechanic.city}</p>
-
-          {/* Conditional rendering of buttons based on role */}
-          {role === "admin" ? (
-            <>
-              <button onClick={() => setIsEditing(true)}>Edit</button>
-              <button onClick={handleDelete}>Delete</button>
-            </>
-          ) : (
-            <>
+      <div className="card-body d-flex flex-column">
+        {isEditing ? (
+          <>
+            <input
+              name="firstName"
+              className="form-control mb-2"
+              value={formData.firstName}
+              onChange={handleChange}
+            />
+            <input
+              name="lastName"
+              className="form-control mb-2"
+              value={formData.lastName}
+              onChange={handleChange}
+            />
+            <input
+              name="specialty"
+              className="form-control mb-2"
+              value={formData.specialty}
+              onChange={handleChange}
+            />
+            <input
+              name="photo"
+              className="form-control mb-2"
+              value={formData.photo}
+              onChange={handleChange}
+            />
+            <input
+              name="workshop"
+              className="form-control mb-2"
+              value={formData.workshop}
+              onChange={handleChange}
+            />
+            <input
+              name="city"
+              className="form-control mb-3"
+              value={formData.city}
+              onChange={handleChange}
+            />
+            <div className="mt-auto d-flex justify-content-between">
               <button
+                className="btn btn-success"
+                onClick={handleUpdate}
+              >
+                Save
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setIsEditing(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <h5 className="card-title">
+              {mechanic.firstName} {mechanic.lastName}
+            </h5>
+            <p className="card-text mb-1">
+              <strong>Specialty:</strong> {mechanic.specialty}
+            </p>
+            <p className="card-text mb-1">
+              <strong>Workshop:</strong> {mechanic.workshop}
+            </p>
+            <p className="card-text mb-3">
+              <strong>City:</strong> {mechanic.city}
+            </p>
+            <div className="mt-auto">
+              <button
+                className="btn btn-outline-primary me-2"
                 onClick={handleLike}
                 disabled={likeInProgress || !isLoggedIn}
-                className={!isLoggedIn ? "disabled-button" : ""}
               >
-                {getLikeButtonText()}
+                {likeText}
               </button>
-            </>
-          )}
-        </div>
-      )}
+              <button
+                className="btn btn-outline-warning me-2"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit
+              </button>
+              <button
+                className="btn btn-outline-danger"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
-
-export default MechanicCard;

@@ -31,38 +31,40 @@ export default function Navbar() {
   }
   return (
     <div>
-      <ul>
-        {isLoggedIn && <li>Hello, {username}!</li>}
-        {location.pathname !== "/" && (
-          <li>
-            <Link to="/">Home</Link>
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+
+      <ul class="nav nav-pills">
+      {location.pathname !== "/" && (
+          <li class="nav-item">
+            <Link className="nav-link" to="/">Home</Link>
           </li>
         )}
         {isLoggedIn && location.pathname !== "/likes" && (
-          <li>
-            <Link to="/likes">Likes</Link>
+          <li class="nav-item">
+            <Link className="nav-link" to="/likes">Likes</Link>
           </li>
         )}
-        {isLoggedIn ? (
+                {isLoggedIn ? (
           <li>
-            <button onClick={handleLogout}>Logout</button>
+            <button className="nav-link" onClick={handleLogout}>Logout</button>
           </li>
         ) : (
           <>
             {location.pathname !== "/login" && (
-              <li>
-                <Link to="/login">Login</Link>
+              <li class="nav-item">
+                <Link className="nav-link" to="/login">Login</Link>
               </li>
             )}
             {location.pathname !== "/register" && (
-              <li>
-                <Link to="/register">Register</Link>
+              <li class="nav-item">
+                <Link className="nav-link" to="/register">Register</Link>
               </li>
             )}
           </>
         )}
       </ul>
       <Outlet />
-    </div>
+      </header>
+  </div>
   );
 }
