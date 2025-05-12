@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { getAllWorkshops } from '../services/WorkshopService';
-import WorkshopCard from './WorkshopCard';
+import { useAuth } from "../services/AuthContext";
+import { getAllWorkshops } from "../services/WorkshopService";
+import WorkshopCard from "./WorkshopCard";
 
 export default function WorkshopDisplay() {
+  const { user, isLoggedIn } = useAuth();
   const [workshops, setWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -56,12 +58,14 @@ export default function WorkshopDisplay() {
       <h2 className="mb-4 text-center">Workshops</h2>
       <div className="row g-4">
         {workshops.map((workshop) => (
-          <div key={workshop._id} className="col-sm-6 col-md-4 col-lg-3">
-            <WorkshopCard
-              workshop={workshop}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
-            />
+          <div className="col-sm-6 col-md-4 col-lg-3">
+          <WorkshopCard
+            key={workshop._id}
+            workshop={workshop}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+            role={user?.role}
+          />
           </div>
         ))}
       </div>

@@ -7,10 +7,6 @@ import MechanicRegistrationForm from "../components/MechanicRegistrationForm";
 export default function HomePage() {
   return (
     <div>
-      <MechanicRegistrationForm />
-      <MechanicDisplay />
-      <WorkshopRegForm />
-      <WorkshopDisplay />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { deleteWorkshop, updateWorkshop } from '../services/WorkshopService';
 
-export default function WorkshopCard({ workshop, onDelete, onUpdate }) {
+function WorkshopCard({ workshop, onDelete, onUpdate, role }) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ name: workshop.name, city: workshop.city });
 
@@ -40,48 +40,28 @@ export default function WorkshopCard({ workshop, onDelete, onUpdate }) {
   };
 
   return (
-    <div className="card h-100 shadow-sm">
-      <div className="card-body d-flex flex-column">
-        {isEditing ? (
-          <>
-            <input
-              name="name"
-              className="form-control mb-2"
-              value={formData.name}
-              onChange={handleChange}
-            />
-            <input
-              name="city"
-              className="form-control mb-3"
-              value={formData.city}
-              onChange={handleChange}
-            />
+    <div className="workshop-card">
+      {isEditing ? (
+        <div>
+          <input className="form-control mb-2" name="name" value={formData.name} onChange={handleChange} />
+          <input className="form-control mb-3" name="city" value={formData.city} onChange={handleChange} />
+          {role === "admin" && (
             <div className="mt-auto d-flex justify-content-between">
-              <button className="btn btn-success" onClick={handleUpdate}>
-                Save
-              </button>
-              <button className="btn btn-secondary" onClick={() => setIsEditing(false)}>
-                Cancel
-              </button>
-            </div>
-          </>
-        ) : (
-          <>
-            <h5 className="card-title">{workshop.name}</h5>
-            <p className="card-text flex-grow-1 mb-3">
-              <strong>City:</strong> {workshop.city}
-            </p>
-            <div className="mt-auto d-flex justify-content-between">
-              <button className="btn btn-outline-warning" onClick={() => setIsEditing(true)}>
-                Edit
-              </button>
-              <button className="btn btn-outline-danger" onClick={handleDelete}>
-                Delete
-              </button>
-            </div>
-          </>
-        )}
-      </div>
+              <button className="btn btn-success" onClick={handleUpdate}>Save</button>
+              <button className="btn btn-secondary" onClick={() => setIsEditing(false)}>Cancel</button>
+            <div/>
+          )}
+        </div>
+      ) : (
+        <div>
+          <h2 className="card-title">{workshop.name}</h2>
+          <p className="card-text flex-grow-1 mb-3">City: {workshop.city}</p>
+          {role === "admin" && (
+            <button  className="btn btn-outline-warning" onClick={() => setIsEditing(true)}>Edit</button>
+          )}
+        </div>
+      )}
+      {role === "admin" && <button className="btn btn-outline-danger" onClick={handleDelete}>Delete</button>}
     </div>
   );
 }

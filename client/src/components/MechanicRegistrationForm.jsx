@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useState, useEffect } from "react";
+import { getAllWorkshops } from "../services/WorkshopService";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -12,11 +14,36 @@ export default function MechanicRegistrationForm() {
     workshop: '',
     city: '',
   });
-  const [error, setError] = useState('');
+
+  const [error, setError] = useState("");
+  const [workshops, setWorkshops] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+      fetchWorkshops();
+    }, []);
+  
+    const fetchWorkshops = async () => {
+      try {
+        const data = await getAllWorkshops();
+        console.log("All workshops", data);
+        setWorkshops(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const uniqueCities = [...new Set(workshops.map(item => item.city))];
+  
+  const filteredWorkshops = workshops.filter(
+  (item) => item.city === formData.city
+);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,6 +51,7 @@ export default function MechanicRegistrationForm() {
     const { firstName, lastName, specialty, photo, workshop, city } = formData;
     if (!firstName || !lastName || !specialty || !photo || !workshop || !city) {
       setError('All fields are required');
+
       return;
     }
 

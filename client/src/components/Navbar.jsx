@@ -6,7 +6,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isLoggedIn, username, loading, logout } = useAuth();
+  const { isLoggedIn, username, loading, logout, user } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -16,8 +16,8 @@ export default function Navbar() {
       });
 
       if (res.ok) {
-        logout(); // update local auth context
-        navigate("/login"); // redirect to login or home
+        logout();
+        navigate("/login");
       } else {
         console.error("Failed to log out");
       }

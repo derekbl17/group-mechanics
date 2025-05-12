@@ -14,7 +14,7 @@ export default function MechanicCard({
   onLikeToggle,
   isLiked,
   isLoggedIn,
-  userId,
+  role, // Accept role as a prop
 }) {
   if (!mechanic || !mechanic._id) {
     console.warn('Invalid mechanic data passed to MechanicCard:', mechanic);
@@ -37,7 +37,7 @@ export default function MechanicCard({
     setLikeInProgress(true);
     try {
       const updated = await toggleLikeMechanic(mechanic._id);
-      onLikeToggle(mechanic._id, updated);
+      onLikeToggle(mechanic._id, updatedMechanic);
     } catch (err) {
       console.error('Error toggling like:', err);
       alert(err.message || 'Error toggling like.');

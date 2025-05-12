@@ -4,7 +4,9 @@ import { getAllMechanics, getLikedMechanics } from '../services/MechanicService'
 import MechanicCard from './MechanicCard';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default function MechanicDisplay() {
+
+function MechanicDisplay({role}) {
+
   const { user, isLoggedIn } = useAuth();
   const [mechanics, setMechanics] = useState([]);
   const [likedMechanicIds, setLikedMechanicIds] = useState(new Set());
@@ -33,9 +35,16 @@ export default function MechanicDisplay() {
 
   const fetchLikedMechanics = async () => {
     try {
-      const liked = await getLikedMechanics();
-      if (Array.isArray(liked)) {
-        setLikedMechanicIds(new Set(liked.map((m) => m._id)));
+      console.log("Fetching liked mechanics for user:");
+      const likedMechanicsData = await getLikedMechanics();
+      console.log("Liked mechanics data:", likedMechanicsData);
+
+      if (Array.isArray(likedMechanicsData) && likedMechanicsData.length > 0) {
+        const likedIds = new Set(
+          likedMechanicsData.map((mechanic) => mechanic._id)
+        );
+        console.log("Liked mechanic IDs:", Array.from(likedIds));
+        setLikedMechanicIds(likedIds);
       } else {
         setLikedMechanicIds(new Set());
       }
@@ -46,8 +55,18 @@ export default function MechanicDisplay() {
 
   const handleDelete = (id) => setMechanics((prev) => prev.filter((m) => m._id !== id));
 
-  const handleUpdate = (updated) =>
-    setMechanics((prev) => prev.map((m) => (m._id === updated._id ? updated : m)));
+    if (!mechanicId || !updatedMechanic) {
+      console.error("Missing data in handleLikeToggle");
+      return;
+    }
+
+    setMechanics((prevMechanics) =>
+      prevMechanics.map((m) => (m._id === mechanicId ? updatedMechanic : m))
+    );
+
+    if (user?.id && Array.isArray(updatedMechanic.likes)) {
+      const isLikedByUser = updatedMechanic.likes.includes(user.id);
+      console.log(`Mechanic ${mechanicId} is liked by user:`, isLikedByUser);
 
   const handleLikeToggle = (id, updated) => {
     setMechanics((prev) => prev.map((m) => (m._id === id ? updated : m)));
@@ -81,17 +100,16 @@ export default function MechanicDisplay() {
       <h1 className="mb-4 text-center">All Mechanics</h1>
       <div className="row g-4">
         {mechanics.map((mechanic) => (
-          <div key={mechanic._id} className="col-sm-6 col-md-4 col-lg-3">
-            <MechanicCard
-              mechanic={mechanic}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
-              onLikeToggle={handleLikeToggle}
-              isLiked={likedMechanicIds.has(mechanic._id)}
-              isLoggedIn={isLoggedIn}
-              userId={user?.id}
-            />
-          </div>
+          <MechanicCard
+            key={mechanic._id}
+            mechanic={mechanic}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+            onLikeToggle={handleLikeToggle}
+            isLiked={likedMechanicIds.has(mechanic._id)}
+            isLoggedIn={isLoggedIn}
+            role={role}
+          />
         ))}
       </div>
     </div>
