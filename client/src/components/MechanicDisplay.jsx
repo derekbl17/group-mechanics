@@ -5,6 +5,7 @@ import MechanicCard from './MechanicCard';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
+
 function MechanicDisplay({role}) {
 
   const { user, isLoggedIn } = useAuth();
@@ -14,12 +15,18 @@ function MechanicDisplay({role}) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchMechanics();
-    if (isLoggedIn && user?.id) {
-      fetchLikedMechanics();
-    } else {
-      setLikedMechanicIds(new Set());
-    }
+
+    const init = async () => {
+      await fetchMechanics();
+      console.log(user);
+      if (isLoggedIn && user?._id) {
+        await fetchLikedMechanics();
+      } else {
+        setLikedMechanicIds(new Set());
+      }
+    };
+    init();
+
   }, [isLoggedIn, user]);
 
   const fetchMechanics = async () => {
@@ -35,9 +42,7 @@ function MechanicDisplay({role}) {
 
   const fetchLikedMechanics = async () => {
     try {
-      console.log("Fetching liked mechanics for user:");
       const likedMechanicsData = await getLikedMechanics();
-      console.log("Liked mechanics data:", likedMechanicsData);
 
       if (Array.isArray(likedMechanicsData) && likedMechanicsData.length > 0) {
         const likedIds = new Set(

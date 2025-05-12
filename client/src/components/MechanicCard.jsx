@@ -82,7 +82,8 @@ export default function MechanicCard({
     }
   };
 
-  const likesCount = Array.isArray(mechanic.likes)
+
+  const likesCount = Array.isArray(mechanic.likes) ? mechanic.likes.length : 0;
     ? mechanic.likes.length
     : 0;
   const likeText = !isLoggedIn
@@ -91,15 +92,18 @@ export default function MechanicCard({
     ? `💔 Unlike (${likesCount})`
     : `❤️ Like (${likesCount})`;
 
+
   return (
     <div className="card h-100 shadow-sm">
       <img
         src={
           validator.isURL(mechanic.photo)
             ? mechanic.photo
+
             : '/styles/images/mechanic.jpg'
         }
         className="card-img-top"
+
         alt={`${mechanic.firstName} ${mechanic.lastName}`}
       />
       <div className="card-body d-flex flex-column">

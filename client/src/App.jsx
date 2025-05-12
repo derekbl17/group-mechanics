@@ -43,13 +43,14 @@ function App() {
             }
           />
           <Route path="/forbidden" element={<ForbiddenPage />} />
-         
+
           <Route element={<RequireAdminAuth />}>
             <Route path="/admin" element={<AdminPage />} />
           </Route>
-            
+
           <Route element={<RequireBasicAuth />}>
             <Route path="/basic" element={<BasicPage />} />
+            <Route path="/likes" element={<LikedMechanicsPage />} />
           </Route>
 
           <Route path="*" element={<ErrorPage />} />
