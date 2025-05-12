@@ -8,14 +8,14 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  const apiUrl = import.meta.env.MONGODB_URI;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const checkAuth = async () => {
     try {
       const res = await fetch(`${apiUrl}/api/login-check`, {
         credentials: "include",
       });
-  
+
       if (res.ok) {
         const data = await res.json();
         setIsLoggedIn(true);
@@ -48,7 +48,7 @@ export function AuthProvider({ children }) {
     setIsLoggedIn(false);
     setUsername(null);
   };
-console.log("Auth state:", { isLoggedIn, user });
+  console.log("Auth state:", { isLoggedIn, user });
   return (
     <AuthContext.Provider
       value={{ isLoggedIn, username, login, logout, loading, user }}

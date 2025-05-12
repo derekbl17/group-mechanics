@@ -97,6 +97,7 @@ function MechanicCard({
   const likesCount = Array.isArray(mechanic.likes) ? mechanic.likes.length : 0;
 
   const getLikeButtonText = () => {
+    console.log(isLiked);
     if (!isLoggedIn) {
       return `❤️ Likes (${likesCount})`;
     }
@@ -106,7 +107,11 @@ function MechanicCard({
   return (
     <div className="mechanic-card">
       <img
-        src={validator.isURL(mechanic.photo) ? mechanic.photo : "../styles/images/mechanic.jpg"}
+        src={
+          validator.isURL(mechanic.photo)
+            ? mechanic.photo
+            : "../styles/images/mechanic.jpg"
+        }
         alt={`${mechanic.firstName} ${mechanic.lastName}`}
       />
       {isEditing ? (

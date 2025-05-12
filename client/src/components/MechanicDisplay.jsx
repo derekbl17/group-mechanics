@@ -6,7 +6,7 @@ import {
 } from "../services/MechanicService";
 import MechanicCard from "./MechanicCard";
 
-function MechanicDisplay({role}) {
+function MechanicDisplay({ role }) {
   const { user, isLoggedIn } = useAuth();
   const [mechanics, setMechanics] = useState([]);
   const [likedMechanicIds, setLikedMechanicIds] = useState(new Set());
@@ -14,23 +14,24 @@ function MechanicDisplay({role}) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchMechanics();
-
-    if (isLoggedIn && user?.id) {
-      fetchLikedMechanics();
-    } else {
-      setLikedMechanicIds(new Set());
-    }
+    const init = async () => {
+      await fetchMechanics();
+      console.log(user);
+      if (isLoggedIn && user?._id) {
+        await fetchLikedMechanics();
+      } else {
+        setLikedMechanicIds(new Set());
+      }
+    };
+    init();
   }, [isLoggedIn, user]);
 
   const fetchMechanics = async () => {
     try {
       const data = await getAllMechanics();
-      console.log("All mechanics:", data);
       setMechanics(data);
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching mechanics:", err);
       setError(err.message);
       setLoading(false);
     }
@@ -42,9 +43,7 @@ function MechanicDisplay({role}) {
     }
 
     try {
-      console.log("Fetching liked mechanics for user:");
       const likedMechanicsData = await getLikedMechanics();
-      console.log("Liked mechanics data:", likedMechanicsData);
 
       if (Array.isArray(likedMechanicsData) && likedMechanicsData.length > 0) {
         const likedIds = new Set(
