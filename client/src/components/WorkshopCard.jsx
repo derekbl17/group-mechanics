@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { deleteWorkshop, updateWorkshop } from "../services/WorkshopService";
 
-function WorkshopCard({ workshop, onDelete, onUpdate }) {
+function WorkshopCard({ workshop, onDelete, onUpdate, role }) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: workshop.name,
@@ -52,17 +52,23 @@ function WorkshopCard({ workshop, onDelete, onUpdate }) {
         <div>
           <input name="name" value={formData.name} onChange={handleChange} />
           <input name="city" value={formData.city} onChange={handleChange} />
-          <button onClick={handleUpdate}>Save</button>
-          <button onClick={() => setIsEditing(false)}>Cancel</button>
+          {role === "admin" && (
+            <>
+              <button onClick={handleUpdate}>Save</button>
+              <button onClick={() => setIsEditing(false)}>Cancel</button>
+            </>
+          )}
         </div>
       ) : (
         <div>
           <h2>{workshop.name}</h2>
           <p>City: {workshop.city}</p>
-          <button onClick={() => setIsEditing(true)}>Edit</button>
+          {role === "admin" && (
+            <button onClick={() => setIsEditing(true)}>Edit</button>
+          )}
         </div>
       )}
-      <button onClick={handleDelete}>Delete</button>
+      {role === "admin" && <button onClick={handleDelete}>Delete</button>}
     </div>
   );
 }

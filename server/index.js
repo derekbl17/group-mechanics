@@ -1,12 +1,12 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
-const authRoutes=require('./routes/authRoutes.js')
-const mechanicRoutes=require('./routes/mechanics.js')
-const workshopRoutes=require('./routes/workshopRoutes.js')
+const authRoutes = require('./routes/authRoutes.js');
+const mechanicRoutes = require('./routes/mechanics.js');
+const workshopRoutes = require('./routes/workshopRoutes.js');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -14,22 +14,20 @@ const PORT = process.env.PORT || 5001;
 const corsOptions = {
   origin: 'http://localhost:5173',
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));
+app.use(cookieParser());  
+app.use(express.json()); 
 
 
-app.use(express.json());
-app.use(cookieParser())
+app.use('/api', authRoutes);
+app.use('/api', mechanicRoutes);
+app.use('/api', workshopRoutes);
 
 
-app.use('/api',authRoutes)
-app.use('/api',mechanicRoutes)
-app.use('/api',workshopRoutes)
-
-// Connect to MongoDB
 async function connectDB() {
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
@@ -39,12 +37,12 @@ async function connectDB() {
     console.log('✅ MongoDB connected!');
   } catch (error) {
     console.error('❌ MongoDB connection error:', error);
-    process.exit(1); // Stop app if can't connect
+    process.exit(1);
   }
 }
 connectDB();
 
-// Start server
+
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

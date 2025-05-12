@@ -1,44 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
-
-const apiUrl = import.meta.env.VITE_API_URL;
+import { useAuth } from "../services/AuthContext"; // Assuming you're using this context
 
 export default function RequireAdminAuth() {
   const [checking, setChecking] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, isLoggedIn } = useAuth(); // Get user info from context
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const res = await fetch(`${apiUrl}/api/admin-check`, {
-          credentials: "include", // still using cookies
-        });
+      if (!isLoggedIn) {
+        navigate("/login", { replace: true });
+        return;
+      }
 
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data.message);
-
-        console.log("✅ Authenticated:", data.message);
-        setChecking(false); // allow rendering
-      } catch (err) {
-        console.log("❌ Not authenticated:", err.message);
-
-        if (location.pathname === "/register") {
-          // Allow access to register
-          setChecking(false);
-        } else {
-          navigate("/forbidden", { replace: true });
-        }
+      if (user && user.role === "admin") {
+        setChecking(false);
+      } else {
+        console.log("Redirecting to forbidden page");
+        navigate("/forbidden", { replace: true });
       }
     };
 
     checkAuth();
-  }, [navigate, location.pathname]);
+  }, [isLoggedIn, user, navigate]);
 
   if (checking) {
     return <div>Checking authentication...</div>;
   }
 
-  return <Outlet />; // render nested routes
+  return <Outlet />;  
 }

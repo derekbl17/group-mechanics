@@ -10,6 +10,11 @@ import { useAuth } from "./services/AuthContext.jsx";
 import ForbiddenPage from "./Pages/ForbiddenPage.jsx";
 import HomePage from "./Pages/HomePage.jsx";
 import LikedMechanicsPage from "./Pages/LikedMechanicsPage.jsx";
+import AdminPage from "./Pages/AdminPage.jsx";
+import BasicPage from "./Pages/BasicPage.jsx";
+
+
+
 
 function App() {
   const { loading } = useAuth();
@@ -40,15 +45,15 @@ function App() {
             }
           />
           <Route path="/forbidden" element={<ForbiddenPage />} />
-          {/* Protected Routes */}
+         
           <Route element={<RequireAdminAuth />}>
-            <Route path="/admin" />
+            <Route path="/admin" element={<AdminPage />} />
           </Route>
+            
           <Route element={<RequireBasicAuth />}>
-            <Route path="/likes" element={<LikedMechanicsPage />} />
-            <Route path="/basic" />
+            <Route path="/basic" element={<BasicPage />} />
           </Route>
-          {/* Redirects invalid paths to (Error page) */}
+
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>

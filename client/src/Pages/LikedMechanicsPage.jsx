@@ -1,69 +1,55 @@
-import React, { useState, useEffect } from "react";
-import { useAuth } from "../services/AuthContext";
+import React, { useEffect, useState } from "react";
 import { getLikedMechanics } from "../services/MechanicService";
 import MechanicCard from "../components/MechanicCard";
+import { useAuth } from "../services/AuthContext"; // Adjust path as needed
 
-function LikedMechanicsPage() {
-  const { user, isLoggedIn } = useAuth();
+const LikedMechanicsPage = () => {
   const [mechanics, setMechanics] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
+  const { isLoggedIn, user } = useAuth();
+  console.log("yata");
   useEffect(() => {
-    if (isLoggedIn) {
-      fetchLikedMechanics();
-    } else {
-      setLoading(false);
-    }
+    const fetchLiked = async () => {
+      if (!isLoggedIn) return;
+      try {
+        const data = await getLikedMechanics();
+        setMechanics(data);
+      } catch (err) {
+        console.error("Could not load liked mechanics", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLiked();
   }, [isLoggedIn]);
 
-  const fetchLikedMechanics = async () => {
-    try {
-      setLoading(true);
-      const likedMechanics = await getLikedMechanics();
-      setMechanics(likedMechanics);
-      setError(null);
-    } catch (err) {
-      console.error("Error fetching liked mechanics:", err);
-      setError("Failed to load liked mechanics");
-      setMechanics([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (!isLoggedIn) {
-    return (
-      <div className="container">
-        Please log in to view your liked mechanics
-      </div>
-    );
-  }
-
-  if (loading) return <div className="container">Loading...</div>;
-  if (error) return <div className="container">Error: {error}</div>;
+  if (!isLoggedIn) return <div>Please log in to view liked mechanics.</div>;
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="container">
-      <h1>Your Liked Mechanics</h1>
+      <h1>Liked Mechanics</h1>
       {mechanics.length === 0 ? (
-        <p>You haven't liked any mechanics yet</p>
+        <p>You haven’t liked any mechanics yet.</p>
       ) : (
         <div className="mechanic-grid">
           {mechanics.map((mechanic) => (
             <MechanicCard
               key={mechanic._id}
               mechanic={mechanic}
-              isLiked={true} // Since these are all liked mechanics
-              isLoggedIn={isLoggedIn}
+              isLiked={true}
               userId={user?._id}
-              onLikeToggle={() => fetchLikedMechanics()} // Refresh after toggle
+              onLikeToggle={() => {
+                // re-fetch to update after toggle
+                getLikedMechanics().then(setMechanics);
+              }}
             />
           ))}
         </div>
       )}
     </div>
   );
-}
+};
 
 export default LikedMechanicsPage;

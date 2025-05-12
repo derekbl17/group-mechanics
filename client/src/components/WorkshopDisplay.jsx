@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useAuth } from "../services/AuthContext";
 import { getAllWorkshops } from "../services/WorkshopService";
 import WorkshopCard from "./WorkshopCard";
 
 export default function WorkshopDisplay() {
+  const { user, isLoggedIn } = useAuth();
   const [workshops, setWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,6 +47,8 @@ export default function WorkshopDisplay() {
             workshop={workshop}
             onDelete={handleDelete}
             onUpdate={handleUpdate}
+            role={user?.role}
+
           />
         ))}
       </div>
