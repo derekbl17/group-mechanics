@@ -4,10 +4,7 @@ import { getAllMechanics, getLikedMechanics } from '../services/MechanicService'
 import MechanicCard from './MechanicCard';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
-
-function MechanicDisplay({role}) {
-
+const MechanicDisplay = ({role}) => {
   const { user, isLoggedIn } = useAuth();
   const [mechanics, setMechanics] = useState([]);
   const [likedMechanicIds, setLikedMechanicIds] = useState(new Set());
@@ -120,3 +117,6 @@ function MechanicDisplay({role}) {
     </div>
   );
 }
+}
+
+export default MechanicDisplay;

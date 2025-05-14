@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { deleteWorkshop, updateWorkshop } from '../services/WorkshopService';
 
-function WorkshopCard({ workshop, onDelete, onUpdate, role }) {
+const WorkshopCard = ({ workshop, onDelete, onUpdate, role }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ name: workshop.name, city: workshop.city });
 
@@ -49,7 +49,7 @@ function WorkshopCard({ workshop, onDelete, onUpdate, role }) {
             <div className="mt-auto d-flex justify-content-between">
               <button className="btn btn-success" onClick={handleUpdate}>Save</button>
               <button className="btn btn-secondary" onClick={() => setIsEditing(false)}>Cancel</button>
-            <div/>
+            </div>
           )}
         </div>
       ) : (
@@ -65,3 +65,5 @@ function WorkshopCard({ workshop, onDelete, onUpdate, role }) {
     </div>
   );
 }
+
+export default WorkshopCard;

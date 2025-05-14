@@ -84,8 +84,6 @@ export default function MechanicCard({
 
 
   const likesCount = Array.isArray(mechanic.likes) ? mechanic.likes.length : 0;
-    ? mechanic.likes.length
-    : 0;
   const likeText = !isLoggedIn
     ? `❤️ Likes (${likesCount})`
     : isLiked

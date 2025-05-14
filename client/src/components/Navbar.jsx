@@ -31,16 +31,16 @@ export default function Navbar() {
   }
   return (
     <div>
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+    <header className="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
 
-      <ul class="nav nav-pills">
+      <ul className="nav nav-pills">
       {location.pathname !== "/" && (
-          <li class="nav-item">
+          <li className="nav-item">
             <Link className="nav-link" to="/">Home</Link>
           </li>
         )}
         {isLoggedIn && location.pathname !== "/likes" && (
-          <li class="nav-item">
+          <li className="nav-item">
             <Link className="nav-link" to="/likes">Likes</Link>
           </li>
         )}
@@ -51,12 +51,12 @@ export default function Navbar() {
         ) : (
           <>
             {location.pathname !== "/login" && (
-              <li class="nav-item">
+              <li className="nav-item">
                 <Link className="nav-link" to="/login">Login</Link>
               </li>
             )}
             {location.pathname !== "/register" && (
-              <li class="nav-item">
+              <li className="nav-item">
                 <Link className="nav-link" to="/register">Register</Link>
               </li>
             )}
